@@ -82,11 +82,19 @@ class TrainerViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
-    username = request.data.get('username')
+    email = request.data.get('email')
     password = request.data.get('password')
     
-    if not username or not password:
-        return Response({'error': 'Please provide both username and password.'}, status=status.HTTP_400_BAD_REQUEST)
+    if not email or not password:
+        return Response({'error': 'Please provide both email and password.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    # Look up the user by email to get their username for Django authentication
+    try:
+        user_obj = User.objects.get(email=email)
+        username = user_obj.username
+    except User.DoesNotExist:
+        # We don't want to explicitly reveal that the email doesn't exist for security reasons
+        return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
         
     user = authenticate(username=username, password=password)
     
@@ -101,4 +109,4 @@ def login_view(request):
         else:
             return Response({'error': 'You do not have admin permissions.'}, status=status.HTTP_403_FORBIDDEN)
     else:
-        return Response({'error': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)

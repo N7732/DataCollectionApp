@@ -4,7 +4,7 @@ import logo from '../assets/logo.jpeg';
 import { Lock, Mail } from 'lucide-react';
 
 export default function Login() {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function Login() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: credentials.username,
+          email: credentials.email,
           password: credentials.password
         }),
       });
@@ -42,7 +42,7 @@ export default function Login() {
         
         navigate('/trustcollecteddatastudents');
       } else {
-        setError(data.error || 'Invalid username or password. Please try again.');
+        setError(data.error || 'Invalid email or password. Please try again.');
       }
     } catch (err) {
       console.error('Login error:', err);
@@ -72,18 +72,18 @@ export default function Login() {
 
         <form onSubmit={handleLogin}>
           <div className="form-group" style={{ position: 'relative' }}>
-            <label className="form-label" style={{ color: '#111827' }}>Username</label>
+            <label className="form-label" style={{ color: '#111827' }}>Email Address</label>
             <div style={{ position: 'relative' }}>
               <Mail size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input 
-                type="text" 
-                name="username" 
-                value={credentials.username} 
+                type="email" 
+                name="email" 
+                value={credentials.email} 
                 onChange={handleInputChange} 
                 className="form-control" 
                 style={{ paddingLeft: '2.5rem', backgroundColor: '#f9fafb' }}
                 required 
-                placeholder="admin_username" 
+                placeholder="admin@example.com" 
               />
             </div>
           </div>
