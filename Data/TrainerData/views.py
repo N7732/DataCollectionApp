@@ -89,12 +89,13 @@ def login_view(request):
         return Response({'error': 'Please provide both email and password.'}, status=status.HTTP_400_BAD_REQUEST)
         
     # Look up the user by email to get their username for Django authentication
-    try:
-        user_obj = User.objects.get(email=email)
-        username = user_obj.username
-    except User.DoesNotExist:
-        # We don't want to explicitly reveal that the email doesn't exist for security reasons
+    # Use filter instead of get to prevent MultipleObjectsReturned crashes if emails are duplicated
+    user_obj = User.objects.filter(email=email).order_by('-is_superuser').first()
+    
+    if not user_obj:
         return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+    username = user_obj.username
         
     user = authenticate(username=username, password=password)
     
