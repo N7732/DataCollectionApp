@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Users, Settings, LogOut, LayoutDashboard, Search, Edit, Trash2, Plus, X, Eye, Filter, FileText, Image as ImageIcon, Download
 } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import logo from '../assets/logo.jpeg';
 import AdminSettings from './AdminSettings';
 
@@ -13,6 +14,7 @@ export default function AdminDashboard() {
   // Status and Level Filter States
   const [statusFilter, setStatusFilter] = useState('All');
   const [levelFilter, setLevelFilter] = useState('All');
+  const [timeFilter, setTimeFilter] = useState('All Time');
   const [searchTerm, setSearchTerm] = useState('');
   
   const [trainers, setTrainers] = useState([]);
@@ -46,8 +48,10 @@ export default function AdminDashboard() {
             country: item.Country || 'N/A',
             city: item.City || 'N/A',
             address: item.Adress || 'N/A',
+            college: item.college || 'N/A',
             experience_year: item.Experience_year || 0,
             where_hear: item.Where_did_Hear_us || 'N/A',
+            created_at: item.created_at,
             cv_url: item.upload_cv,
             profile_url: item.profile_picture,
             rec_letter_url: item.Recommendation_letter
@@ -78,6 +82,34 @@ export default function AdminDashboard() {
   const handleDelete = (id) => {
     if(window.confirm('Are you sure you want to delete this trainer?')) {
       setTrainers(trainers.filter(t => t.id !== id));
+      // Optionally fire a DELETE request here
+    }
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+    // Optimistically update UI
+    const originalTrainers = [...trainers];
+    setTrainers(trainers.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    
+    try {
+      const apiKey = localStorage.getItem('trainerApiKey');
+      const response = await fetch(`https://datacollectionapp-wgon.onrender.com/api/trainers/${id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-KEY': apiKey || ''
+        },
+        body: JSON.stringify({ Status: newStatus })
+      });
+      
+      if (!response.ok) {
+        setTrainers(originalTrainers);
+        alert('Failed to update status on the server.');
+      }
+    } catch (error) {
+      console.error(error);
+      setTrainers(originalTrainers);
+      alert('Network error while updating status.');
     }
   };
 
@@ -93,8 +125,51 @@ export default function AdminDashboard() {
     const matchesSearch = t.name.toLowerCase().includes(searchTerm.toLowerCase()) || t.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'All' || t.status === statusFilter;
     const matchesLevel = levelFilter === 'All' || t.level === levelFilter;
-    return matchesSearch && matchesStatus && matchesLevel;
+    
+    let matchesTime = true;
+    if (timeFilter !== 'All Time' && t.created_at) {
+      const now = new Date();
+      const createdDate = new Date(t.created_at);
+      const diffTime = Math.abs(now - createdDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (timeFilter === 'This Week') matchesTime = diffDays <= 7;
+      else if (timeFilter === 'This Month') matchesTime = diffDays <= 30;
+      else if (timeFilter === 'Last 3 Months') matchesTime = diffDays <= 90;
+    }
+    
+    return matchesSearch && matchesStatus && matchesLevel && matchesTime;
   });
+
+  // Prepare data for the chart
+  const getChartData = () => {
+    const monthCounts = {};
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    // Initialize last 6 months with 0
+    const now = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      monthCounts[`${months[d.getMonth()]} ${d.getFullYear()}`] = 0;
+    }
+
+    trainers.forEach(t => {
+      if (t.created_at) {
+        const d = new Date(t.created_at);
+        const key = `${months[d.getMonth()]} ${d.getFullYear()}`;
+        if (monthCounts[key] !== undefined) {
+          monthCounts[key]++;
+        }
+      }
+    });
+    
+    return Object.keys(monthCounts).map(key => ({
+      name: key,
+      Registrations: monthCounts[key]
+    }));
+  };
+  
+  const chartData = getChartData();
 
   return (
     <div className="dashboard-layout">
@@ -166,6 +241,29 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            <div className="white-panel" style={{ padding: '2rem', marginBottom: '2rem' }}>
+              <h3 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#111827' }}>Registration Trend (Last 6 Months)</h3>
+              <div style={{ width: '100%', height: 300 }}>
+                <ResponsiveContainer>
+                  <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorReg" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--primary-color)" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="var(--primary-color)" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <XAxis dataKey="name" stroke="#6b7280" fontSize={12} />
+                    <YAxis stroke="#6b7280" fontSize={12} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} 
+                    />
+                    <Area type="monotone" dataKey="Registrations" stroke="var(--primary-color)" fillOpacity={1} fill="url(#colorReg)" strokeWidth={3} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
             <div className="white-panel" style={{ padding: '2rem' }}>
               <h3 style={{ marginTop: 0, marginBottom: '1rem', color: '#111827' }}>Recent Activity</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>The system is currently running smoothly. You have {trainers.length} total trainers registered in the database.</p>
@@ -218,6 +316,13 @@ export default function AdminDashboard() {
                     <option value="Active to Our Course">Active to Our Course</option>
                     <option value="Rejected to Our Course">Rejected to Our Course</option>
                     <option value="Other">Other</option>
+                  </select>
+
+                  <select className="form-control" style={{ width: 'auto', backgroundColor: '#f9fafb' }} value={timeFilter} onChange={(e) => setTimeFilter(e.target.value)}>
+                    <option value="All Time">All Time</option>
+                    <option value="This Week">This Week</option>
+                    <option value="This Month">This Month</option>
+                    <option value="Last 3 Months">Last 3 Months</option>
                   </select>
 
                   <select className="form-control" style={{ width: 'auto', backgroundColor: '#f9fafb' }} value={levelFilter} onChange={(e) => setLevelFilter(e.target.value)}>
@@ -276,12 +381,21 @@ export default function AdminDashboard() {
                           </td>
                           <td style={{ color: '#111827' }}>{trainer.degree}</td>
                           <td>
-                            <span style={{ 
-                              display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', 
-                              backgroundColor: trainer.status.includes('Active') || trainer.status === 'Contract Signed' ? 'var(--success-color)' : trainer.status.includes('Reject') ? 'var(--error-color)' : '#f59e0b',
-                              marginRight: '6px'
-                            }}></span>
-                            <span style={{ fontSize: '0.85rem', color: '#111827' }}>{trainer.status}</span>
+                            <select 
+                              className="form-control" 
+                              style={{ padding: '0.2rem', fontSize: '0.85rem', width: '130px', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                              value={trainer.status}
+                              onChange={(e) => handleStatusChange(trainer.id, e.target.value)}
+                            >
+                              <option value="New">New</option>
+                              <option value="Under Review">Under Review</option>
+                              <option value="Communicated">Communicated</option>
+                              <option value="Contract Signed">Contract Signed</option>
+                              <option value="Training Session Conducted">Training Session Conducted</option>
+                              <option value="Active to Our Course">Active to Our Course</option>
+                              <option value="Rejected to Our Course">Rejected to Our Course</option>
+                              <option value="Other">Other</option>
+                            </select>
                           </td>
                           <td>
                             <div className="flex gap-2">
@@ -359,8 +473,9 @@ export default function AdminDashboard() {
                   <FileText size={18} /> Experience & Ed.
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                  <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>University/College</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.college}</strong></div>
                   <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Degree & Level</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.degree} ({viewTrainer.level})</strong></div>
-                  <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Total Experience</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.experience_year || 0} Years</strong></div>
+                  <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Total Experience</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.experience_year} Years</strong></div>
                 </div>
               </div>
 

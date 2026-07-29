@@ -21,6 +21,16 @@ class Trainer(models.Model):
         ('Advertisement', 'Advertisement'),
         ('Other', 'Other'),
     ]
+    Status_CHOICES = [
+        ('New', 'New'),
+        ('Under Review', 'Under Review'),
+        ('Communicated', 'Communicated'),
+        ('Contract Signed', 'Contract Signed'),
+        ('Training Session Conducted', 'Training Session Conducted'),
+        ('Active to Our Course', 'Active to Our Course'),
+        ('Rejected to Our Course', 'Rejected to Our Course'),
+        ('Other', 'Other'),
+    ]
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
     Where_did_Hear_us = models.CharField(max_length=100, blank=True, choices=Hear_CHOICES)
@@ -34,6 +44,9 @@ class Trainer(models.Model):
     City = models.CharField(max_length=100, blank=True)
     Adress = models.CharField(max_length=255, blank=True)
     Phone_number = models.CharField(max_length=15, blank=False, null=False  )
+    Experience_year = models.IntegerField(default=0)
+    Status = models.CharField(max_length=50, choices=Status_CHOICES, default='New')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username
