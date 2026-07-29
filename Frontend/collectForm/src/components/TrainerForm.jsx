@@ -72,7 +72,7 @@ export default function TrainerForm() {
     });
 
     try {
-      const response = await fetch('http://localhost:8000/api/trainers/', {
+      const response = await fetch('https://datacollectionapp-wgon.onrender.com/api/trainers/', {
         method: 'POST',
         body: formDataToSend,
       });

@@ -26,7 +26,7 @@ export default function AdminDashboard() {
       const apiKey = localStorage.getItem('trainerApiKey');
       
       try {
-        const response = await fetch('http://localhost:8000/api/trainers/', {
+        const response = await fetch('https://datacollectionapp-wgon.onrender.com/api/trainers/', {
           headers: {
             'X-API-KEY': apiKey || ''
           }

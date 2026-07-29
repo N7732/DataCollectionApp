@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-g7c@*lx!oh6u2+3jq24&81c7@6!lru9_$owp4pt%s@w(34ss63
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['datacollectionapp-wgon.onrender.com', 'localhost', '127.0.0.1', '*']
 
 
 # Application definition
@@ -144,6 +144,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 CORS_ALLOWED_ORIGINS = [
+    "https://collect-form.vercel.app",
     "http://localhost:5173",
     "http://localhost:3000",
 ]
