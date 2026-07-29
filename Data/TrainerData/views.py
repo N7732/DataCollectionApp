@@ -1,5 +1,7 @@
-from rest_framework import viewsets, parsers, permissions
+from rest_framework import viewsets, parsers, permissions, status
+from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
+from django.contrib.auth.models import User
 from .models import Trainer
 from .serializers import TrainerSerializer
 
@@ -43,6 +45,33 @@ class TrainerViewSet(viewsets.ModelViewSet):
     
     # Apply our strict new custom API Key permission logic
     permission_classes = [ExternalAPIKeyReadOnlyPermission]
+
+    def create(self, request, *args, **kwargs):
+        name = request.data.get('name')
+        email = request.data.get('email')
+        
+        if not name or not email:
+            return Response({'error': 'Name and Email are required.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        # Ensure a user exists for this email
+        user, created = User.objects.get_or_create(
+            username=email, 
+            defaults={'email': email, 'first_name': name[:30]}
+        )
+        
+        # Make a mutable copy of the form data
+        data = request.data.copy()
+        data['user'] = user.id
+        
+        # Also map frontend fields to backend if possible (optional safely)
+        if 'years_experience_backend' in data and not 'Experience_year' in data:
+            data['Experience_year'] = data['years_experience_backend']
+            
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save()
