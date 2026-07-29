@@ -17,6 +17,10 @@ class ExternalAPIKeyReadOnlyPermission(permissions.BasePermission):
     - External sites CANNOT Edit or Delete using the API Key.
     """
     def has_permission(self, request, view):
+        # 0. Always allow CORS preflight requests
+        if request.method == 'OPTIONS':
+            return True
+            
         # 1. Allow public submission of new applications
         if request.method == 'POST':
             return True
