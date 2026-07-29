@@ -10,7 +10,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<TrainerForm />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/log" element={<Login />} />
         <Route 
           path="/trustcollecteddatastudents" 
           element={

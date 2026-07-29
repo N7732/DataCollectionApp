@@ -123,7 +123,7 @@ export default function AdminDashboard() {
             className="nav-item" 
             onClick={() => {
               localStorage.removeItem('adminSessionToken');
-              navigate('/login');
+              navigate('/log');
             }} 
             style={{ color: 'var(--error-color)', width: '100%', background: 'transparent', border: 'none', textAlign: 'left', cursor: 'pointer' }}
           >
