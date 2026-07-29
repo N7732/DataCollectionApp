@@ -44,8 +44,7 @@ export default function AdminDashboard() {
             country: item.Country,
             city: item.City,
             address: item.Adress,
-            expBackend: item.years_experience_backend,
-            expFrontend: item.years_experience_frontend,
+            experience_year: item.Experience_year,
             where_hear: item.Where_did_Hear_us,
             cv_url: item.upload_cv,
             profile_url: item.profile_picture,
@@ -58,7 +57,7 @@ export default function AdminDashboard() {
           setApiError('Failed to fetch trainer data.');
         }
       } catch (error) {
-        setApiError('Network Error. Is the Django server running on port 8000?');
+        setApiError('Network Error. Please check your internet connection or the API status.');
       } finally {
         setLoading(false);
       }
@@ -360,10 +359,6 @@ export default function AdminDashboard() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                   <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Degree & Level</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.degree} ({viewTrainer.level})</strong></div>
                   <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Total Experience</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.experience_year || 0} Years</strong></div>
-                  <div className="flex gap-4">
-                    <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Backend Exp</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.expBackend || 0} Yrs</strong></div>
-                    <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Frontend Exp</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.expFrontend || 0} Yrs</strong></div>
-                  </div>
                 </div>
               </div>
 

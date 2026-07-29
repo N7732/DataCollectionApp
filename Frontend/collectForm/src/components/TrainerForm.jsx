@@ -7,7 +7,7 @@ export default function TrainerForm() {
   
   const [formData, setFormData] = useState({
     name: '', email: '', Phone_number: '', Country: '', City: '', Adress: '', Where_did_Hear_us: '',
-    college: '', Degree: '', level: 'Beginner', years_experience_backend: '', years_experience_frontend: '', bio: ''
+    college: '', Degree: '', level: 'Beginner', Experience_year: '', bio: ''
   });
 
   const [files, setFiles] = useState({ upload_cv: null, Recommendation_letter: null, profile_picture: null });
@@ -86,7 +86,7 @@ export default function TrainerForm() {
       }
     } catch (error) {
       console.error('Network Error:', error);
-      alert('Network error. Make sure the Django server is running on port 8000.');
+      alert('Network error. Please check your internet connection or try again later.');
     } finally {
       setIsSubmitting(false);
     }
@@ -198,12 +198,8 @@ export default function TrainerForm() {
               </div>
               <div className="flex gap-4" style={{ marginBottom: '0.8rem' }}>
                 <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
-                  <label className="form-label">Backend Exp. (Years)</label>
-                  <input type="number" min="0" name="years_experience_backend" value={formData.years_experience_backend} onChange={handleInputChange} className="form-control" placeholder="e.g. 3" />
-                </div>
-                <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
-                  <label className="form-label">Frontend Exp. (Years)</label>
-                  <input type="number" min="0" name="years_experience_frontend" value={formData.years_experience_frontend} onChange={handleInputChange} className="form-control" placeholder="e.g. 2" />
+                  <label className="form-label">Total Experience (Years)</label>
+                  <input type="number" min="0" name="Experience_year" value={formData.Experience_year} onChange={handleInputChange} className="form-control" placeholder="e.g. 3" />
                 </div>
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
