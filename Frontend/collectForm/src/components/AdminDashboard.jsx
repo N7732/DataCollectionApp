@@ -50,6 +50,8 @@ export default function AdminDashboard() {
             address: item.Adress || 'N/A',
             college: item.college || 'N/A',
             experience_year: item.Experience_year || 0,
+            cybersecurity_course_applied: item.cybersecurity_course_applied || 'N/A',
+            attended_cybersecurity_course_before: item.attended_cybersecurity_course_before || 'N/A',
             where_hear: item.Where_did_Hear_us || 'N/A',
             created_at: item.created_at,
             cv_url: item.upload_cv,
@@ -458,7 +460,7 @@ export default function AdminDashboard() {
               {/* Personal Info */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '1.5rem' }}>
                 <h4 style={{ color: 'var(--primary-color)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Users size={18} /> Personal Info
+                  <Users size={18} /> Personal Information
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                   <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Location</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.city}, {viewTrainer.country}</strong></div>
@@ -470,12 +472,14 @@ export default function AdminDashboard() {
               {/* Education & Experience */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '1.5rem' }}>
                 <h4 style={{ color: 'var(--primary-color)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <FileText size={18} /> Experience & Ed.
+                  <FileText size={18} /> Experience & Education
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                   <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>University/College</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.college}</strong></div>
                   <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Degree & Level</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.degree} ({viewTrainer.level})</strong></div>
-                  <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Total Experience</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.experience_year} Years</strong></div>
+                  <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Total Experience in Cybersecurity</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.experience_year} Years</strong></div>
+                  <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Cybersecurity Course Applied</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.cybersecurity_course_applied}</strong></div>
+                  <div><span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Attended Cyber Course Before?</span><br/><strong style={{ color: '#111827' }}>{viewTrainer.attended_cybersecurity_course_before}</strong></div>
                 </div>
               </div>
 
@@ -509,7 +513,7 @@ export default function AdminDashboard() {
                   <div className="white-panel" style={{ flex: 1, minWidth: '200px', padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', border: '1px solid #e5e7eb', boxShadow: 'none' }}>
                     <div style={{ background: '#e0e7ff', padding: '0.8rem', borderRadius: '8px' }}><FileText size={24} color="var(--primary-color)" /></div>
                     <div style={{ flex: 1 }}>
-                      <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem', color: '#111827' }}>Rec. Letter</p>
+                      <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem', color: '#111827' }}>Recommendation Letter</p>
                       <a href="#" style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}><Download size={14}/> Download</a>
                     </div>
                   </div>
@@ -547,7 +551,7 @@ export default function AdminDashboard() {
                 <input type="email" className="form-control" style={{ backgroundColor: '#f9fafb' }} value={newTrainer.email} onChange={e => setNewTrainer({...newTrainer, email: e.target.value})} required />
               </div>
               <div className="form-group">
-                <label className="form-label" style={{ color: '#111827' }}>Total Experience (Years)</label>
+                <label className="form-label" style={{ color: '#111827' }}>Total Experience in Cybersecurity (Years)</label>
                 <input type="text" className="form-control" style={{ backgroundColor: '#f9fafb' }} value={newTrainer.experience_year} onChange={e => setNewTrainer({...newTrainer, experience_year: e.target.value})} required />
               </div>
               <div className="form-group">

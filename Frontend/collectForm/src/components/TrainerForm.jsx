@@ -7,7 +7,7 @@ export default function TrainerForm() {
   
   const [formData, setFormData] = useState({
     name: '', email: '', Phone_number: '', Country: '', City: '', Adress: '', Where_did_Hear_us: '',
-    college: '', Degree: '', level: 'Beginner', Experience_year: '', bio: ''
+    college: '', Degree: '', level: 'Beginner', Experience_year: '', cybersecurity_course_applied: '', attended_cybersecurity_course_before: '', bio: ''
   });
 
   const [files, setFiles] = useState({ upload_cv: null, Recommendation_letter: null, profile_picture: null });
@@ -115,7 +115,7 @@ export default function TrainerForm() {
           <img src={logo} alt="Logo" className="app-logo" style={{ height: '40px', marginBottom: '0.5rem', borderRadius: '8px' }} />
           <h1 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'var(--primary-color)', marginBottom: '0.2rem' }}>Trainer Application</h1>
           <p style={{ color: 'var(--text-muted)', textAlign: 'center', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-            Step {currentStepIndex + 1} of {totalSteps}: {step === 1 ? 'Personal Info' : step === 2 ? 'Education & Exp' : 'Documents'}
+            Step {currentStepIndex + 1} of {totalSteps}: {step === 1 ? 'Personal Information' : step === 2 ? 'Education & Experience' : 'Documents'}
           </p>
           
           <div style={{ width: '100%', maxWidth: '300px', height: '6px', background: '#e5e7eb', borderRadius: '4px', overflow: 'hidden' }}>
@@ -198,8 +198,20 @@ export default function TrainerForm() {
               </div>
               <div className="flex gap-4" style={{ marginBottom: '0.8rem' }}>
                 <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
-                  <label className="form-label">Total Experience (Years)</label>
+                  <label className="form-label">Total Year of Experience in Cybersecurity</label>
                   <input type="number" min="0" name="Experience_year" value={formData.Experience_year} onChange={handleInputChange} className="form-control" placeholder="e.g. 3" />
+                </div>
+                <div className="form-group" style={{ flex: 1.5, marginBottom: 0 }}>
+                  <label className="form-label">Application Course in Cybersecurity</label>
+                  <input type="text" name="cybersecurity_course_applied" value={formData.cybersecurity_course_applied} onChange={handleInputChange} className="form-control" placeholder="e.g. Ethical Hacker" />
+                </div>
+                <div className="form-group" style={{ flex: 1.5, marginBottom: 0 }}>
+                  <label className="form-label">Did you attend a Cybersecurity Course before?</label>
+                  <select name="attended_cybersecurity_course_before" value={formData.attended_cybersecurity_course_before} onChange={handleInputChange} className="form-control">
+                    <option value="">Select...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
                 </div>
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
@@ -215,7 +227,7 @@ export default function TrainerForm() {
                 <h3 style={{ fontSize: '1rem', marginBottom: '1rem', color: 'var(--text-main)', textAlign: 'center' }}>Upload Required Documents</h3>
                 <div className="flex gap-4">
                   <div className="glass-panel" style={{ flex: 1, padding: '1rem', border: '1px dashed var(--primary-color)', backgroundColor: 'rgba(255, 255, 255, 0.5)', textAlign: 'center' }}>
-                    <label className="form-label" style={{ marginBottom: '0.5rem', fontWeight: 600 }}>Profile Pic</label>
+                    <label className="form-label" style={{ marginBottom: '0.5rem', fontWeight: 600 }}>Profile Picture</label>
                     <input type="file" name="profile_picture" onChange={handleFileChange} className="form-control form-file" accept="image/*" />
                   </div>
                   <div className="glass-panel" style={{ flex: 1, padding: '1rem', border: '1px dashed var(--primary-color)', backgroundColor: 'rgba(255, 255, 255, 0.5)', textAlign: 'center' }}>
@@ -223,7 +235,7 @@ export default function TrainerForm() {
                     <input type="file" name="upload_cv" onChange={handleFileChange} className="form-control form-file" accept=".pdf,.doc,.docx" />
                   </div>
                   <div className="glass-panel" style={{ flex: 1, padding: '1rem', border: '1px dashed var(--primary-color)', backgroundColor: 'rgba(255, 255, 255, 0.5)', textAlign: 'center' }}>
-                    <label className="form-label" style={{ marginBottom: '0.5rem', fontWeight: 600 }}>Rec Letter</label>
+                    <label className="form-label" style={{ marginBottom: '0.5rem', fontWeight: 600 }}>Recommendation Letter</label>
                     <input type="file" name="Recommendation_letter" onChange={handleFileChange} className="form-control form-file" accept=".pdf,.doc,.docx" />
                   </div>
                 </div>

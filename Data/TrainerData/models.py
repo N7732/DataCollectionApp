@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 
 class Trainer(models.Model):
@@ -45,8 +46,10 @@ class Trainer(models.Model):
     Adress = models.CharField(max_length=255, blank=True)
     Phone_number = models.CharField(max_length=15, blank=False, null=False  )
     Experience_year = models.IntegerField(default=0)
+    cybersecurity_course_applied = models.CharField(max_length=255, blank=True)
+    attended_cybersecurity_course_before = models.CharField(max_length=10, choices=[('Yes', 'Yes'), ('No', 'No')], blank=True)
     Status = models.CharField(max_length=50, choices=Status_CHOICES, default='New')
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.user.username
