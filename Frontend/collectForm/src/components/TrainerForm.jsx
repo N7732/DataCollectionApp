@@ -197,15 +197,15 @@ export default function TrainerForm() {
                 </div>
               </div>
               <div className="flex gap-4" style={{ marginBottom: '0.8rem' }}>
-                <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                <div className="form-group" style={{ flex: 1, marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                   <label className="form-label">Total Year of Experience in Cybersecurity</label>
                   <input type="number" min="0" name="Experience_year" value={formData.Experience_year} onChange={handleInputChange} className="form-control" placeholder="e.g. 3" />
                 </div>
-                <div className="form-group" style={{ flex: 1.5, marginBottom: 0 }}>
+                <div className="form-group" style={{ flex: 1.5, marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                   <label className="form-label">Application Course in Cybersecurity</label>
                   <input type="text" name="cybersecurity_course_applied" value={formData.cybersecurity_course_applied} onChange={handleInputChange} className="form-control" placeholder="e.g. Ethical Hacker" />
                 </div>
-                <div className="form-group" style={{ flex: 1.5, marginBottom: 0 }}>
+                <div className="form-group" style={{ flex: 1.5, marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                   <label className="form-label">Did you attend a Cybersecurity Course before?</label>
                   <select name="attended_cybersecurity_course_before" value={formData.attended_cybersecurity_course_before} onChange={handleInputChange} className="form-control">
                     <option value="">Select...</option>

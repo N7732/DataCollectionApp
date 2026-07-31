@@ -53,6 +53,12 @@ class TrainerViewSet(viewsets.ModelViewSet):
         if not name or not email:
             return Response({'error': 'Name and Email are required.'}, status=status.HTTP_400_BAD_REQUEST)
             
+        if Trainer.objects.filter(user__email=email).exists():
+            return Response(
+                {'error': 'your email is arlead submitted and make sure Good data is Submitted!'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
         # Ensure a user exists for this email
         user, created = User.objects.get_or_create(
             username=email, 
